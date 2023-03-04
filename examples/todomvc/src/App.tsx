@@ -233,6 +233,14 @@ const NotFound = () => {
   )
 }
 
+const FallbackLoader = () => {
+  return (
+    <div>
+      <img src='/flame.svg' className='fallback-loader'/>
+    </div>
+  )
+}
+
 interface ListLoaderData {
   list: ListDoc
   todos: TodoDoc[]
@@ -281,7 +289,7 @@ function App() {
     ),{basename: pageBase});
   return (
     <FireproofCtx.Provider value={fireproof}>
-      <RouterProvider router={router} fallbackElement={<NotFound />}  />
+      <RouterProvider router={router} fallbackElement={<FallbackLoader />}  />
     </FireproofCtx.Provider>
   )
 }

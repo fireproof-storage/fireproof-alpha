@@ -79,6 +79,25 @@
   background-size: 400% 400%;
 }
 
+.fallback-loader {
+  opacity: 25%;
+  animation-name: flicker;
+  animation-duration:50ms;
+  animation-delay:500ms;
+  animation-timing-function: ease-in;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+@keyframes flicker{
+  0%   {transform: rotate(-1deg);}
+  20%  {transform: rotate(1deg);}
+  40%  {transform: rotate(-1deg);}
+  60%  {transform: rotate(1deg) scaleY(1.04);}
+  80%  {transform: rotate(-2deg) scaleY(0.92);}
+  100% {transform: rotate(1deg);}
+}
+
 html {
   animation: gradient 20s ease infinite;
 }
