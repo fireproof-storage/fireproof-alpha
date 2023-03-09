@@ -35,7 +35,7 @@ export default class Fireproof {
     this.clock = clock
     this.config = config
     this.authCtx = authCtx
-    this.instanceId = 'db.' + Math.random().toString(36).substring(2, 7)
+    this.instanceId = 'fp.' + Math.random().toString(36).substring(2, 7)
   }
 
   /**
@@ -250,6 +250,12 @@ export default class Fireproof {
     this.blocks.valet.uploadFunction = carUploaderFn
   }
 
+  /**
+   * Sets the function that will be used to read blocks from a remote peer.
+   * @param {Function} remoteBlockReaderFn - the function that will be used to read blocks from a remote peer
+   * @memberof Fireproof
+   * @instance
+   */
   setRemoteBlockReader (remoteBlockReaderFn) {
     // console.log('registering remote block reader')
     this.blocks.valet.remoteBlockFunction = remoteBlockReaderFn
