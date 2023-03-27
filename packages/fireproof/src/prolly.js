@@ -5,13 +5,13 @@ import {
   findCommonAncestorWithSortedEvents,
   findEventsToSync
 } from './clock.js'
-import { create, load } from '../../../../prolly-trees/src/map.js'
+import { create, load } from 'prolly-trees/map'
 import * as codec from '@ipld/dag-cbor'
 import { sha256 as hasher } from 'multiformats/hashes/sha2'
 import { doTransaction } from './blockstore.js'
 
-import { nocache as cache } from '../../../../prolly-trees/src/cache.js'
-import { CIDCounter, bf, simpleCompare as compare } from '../../../../prolly-trees/src/utils.js'
+import { nocache as cache } from 'prolly-trees/cache'
+import { CIDCounter, bf, simpleCompare as compare } from 'prolly-trees/utils'
 import { create as createBlock } from 'multiformats/block'
 const opts = { cache, chunker: bf(3), codec, hasher, compare }
 
