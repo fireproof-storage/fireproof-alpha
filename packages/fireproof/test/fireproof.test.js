@@ -32,13 +32,13 @@ describe('Fireproof', () => {
   })
   it('mvcc put and get document with _clock that matches', async () => {
     assert(resp0.clock, 'should have clock')
-    assert.equal(resp0.clock[0].toString(), 'bafyreieth2ckopwivda5mf6vu76xwqvox3q5wsaxgbmxy2dgrd4hfuzmma')
+    assert.equal(resp0.clock[0].toString(), 'bafyreiadhnnxgaeeqdxujfew6zxr4lnjyskkrg26cdjvk7tivy6dt4xmsm')
     const theDoc = await database.get('1ef3b32a-3c3a-4b5e-9c1c-8c5c0c5c0c5c')
     theDoc._clock = database.clock
     const put2 = await database.put(theDoc)
     assert.equal(put2.id, '1ef3b32a-3c3a-4b5e-9c1c-8c5c0c5c0c5c')
     assert.equal(put2.clock.length, 1)
-    assert.equal(put2.clock[0].toString(), 'bafyreida2c2ckhjfoz5ulmbbfe66ey4svvedrl4tzbvtoxags2qck7lj2i')
+    assert.equal(put2.clock[0].toString(), 'bafyreib2kck2fv73lgahfcd5imarslgxcmachbxxavhtwahx5ppjfts4qe')
   })
   it('get should return an object instance that is not the same as the one in the db', async () => {
     const theDoc = await database.get('1ef3b32a-3c3a-4b5e-9c1c-8c5c0c5c0c5c')
@@ -51,7 +51,7 @@ describe('Fireproof', () => {
   it('get with mvcc option', async () => {
     const theDoc = await database.get('1ef3b32a-3c3a-4b5e-9c1c-8c5c0c5c0c5c', { mvcc: true })
     assert(theDoc._clock, 'should have _clock')
-    assert.equal(theDoc._clock[0].toString(), 'bafyreieth2ckopwivda5mf6vu76xwqvox3q5wsaxgbmxy2dgrd4hfuzmma')
+    assert.equal(theDoc._clock[0].toString(), 'bafyreiadhnnxgaeeqdxujfew6zxr4lnjyskkrg26cdjvk7tivy6dt4xmsm')
   })
   it('get with mvcc option where someone else changed another document first', async () => {
     const theDoc = await database.get('1ef3b32a-3c3a-4b5e-9c1c-8c5c0c5c0c5c', { mvcc: true })
