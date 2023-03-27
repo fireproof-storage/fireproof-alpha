@@ -110,7 +110,7 @@ describe('Prolly', () => {
     assert.equal(bvalue.toString(), data[0][1].toString())
   })
 
-  it.skip('linear put hundreds of values', async () => {
+  it.skip('passing, slow: linear put hundreds of values', async () => {
     const blocks = new Blockstore()
     const alice = new TestPail(blocks, [])
 

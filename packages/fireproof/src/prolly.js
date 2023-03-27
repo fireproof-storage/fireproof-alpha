@@ -166,7 +166,7 @@ export async function put (inBlocks, head, event, options) {
   const events = new EventFetcher(blocks)
   // this is returning more events than necessary
   const { ancestor, sorted } = await findCommonAncestorWithSortedEvents(events, head)
-  console.log('sorted', JSON.stringify(sorted.map(({ value: { data: { key, value } } }) => ({ key, value }))))
+  // console.log('sorted', JSON.stringify(sorted.map(({ value: { data: { key, value } } }) => ({ key, value }))))
   const prollyRootNode = await prollyRootFromAncestor(events, ancestor, getBlock)
 
   const bulkOperations = bulkFromEvents(sorted)

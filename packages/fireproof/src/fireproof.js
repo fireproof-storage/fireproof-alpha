@@ -89,8 +89,7 @@ export default class Fireproof {
    * @memberof Fireproof
    * @instance
    */
-  async changesSince (decodedEvent) {
-    const event = encodeEvent(decodedEvent)
+  async changesSince (event) {
     // console.log('changesSince', this.instanceId, event, this.clock)
     let rows, dataCIDs, clockCIDs
     if (event) {

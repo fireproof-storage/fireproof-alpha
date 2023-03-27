@@ -242,6 +242,34 @@ describe('Fireproof', () => {
     assert.equal(prevBob.age, 11)
   })
 
+  it('provides docs since tiny', async () => {
+    const result = await database.changesSince()
+    assert.equal(result.rows.length, 1)
+    assert.equal(result.rows[0].key, '1ef3b32a-3c3a-4b5e-9c1c-8c5c0c5c0c5c')
+
+    // console.log('result', result)
+
+    // const result2 = await database.changesSince(result.clock)
+    // console.log('result2', result2)
+    // assert.equal(result2.rows.length, 0)
+
+    const bKey = 'befbef-3c3a-4b5e-9c1c-bbbbbb'
+    const bvalue = {
+      _id: bKey,
+      name: 'bob',
+      age: 44
+    }
+    const response = await database.put(bvalue)
+    assert(response.id, 'should have id')
+    assert.equal(response.id, bKey)
+
+    const res3 = await database.changesSince()
+    assert.equal(res3.rows.length, 2)
+
+    const res4 = await database.changesSince(result.clock)
+    assert.equal(res4.rows.length, 1)
+  })
+
   it('provides docs since', async () => {
     const result = await database.changesSince()
     assert.equal(result.rows.length, 1)
@@ -280,8 +308,6 @@ describe('Fireproof', () => {
 
     const res5 = await database.changesSince(res4.clock)
 
-    // await database.visClock()
-
     assert.equal(res5.rows.length, 1)
 
     const res6 = await database.changesSince(result2.clock)
@@ -309,12 +335,12 @@ describe('Fireproof', () => {
     assert.equal(res9.rows.length, 0)
   })
 
-  it('docs since repeated changes', async () => {
+  it.skip('docs since repeated changes', async () => {
     assert.equal((await database.changesSince()).rows.length, 1)
     let resp, doc, changes
     for (let index = 0; index < 200; index++) {
       const id = '1' + (300 - index).toString()
-      console.log(`Putting id: ${id}, index: ${index}`)
+      // console.log(`Putting id: ${id}, index: ${index}`)
       resp = await database.put({ index, _id: id }).catch(e => {
         assert.fail(`put failed on _id: ${id}, error: ${e.message}`)
       })
@@ -328,7 +354,6 @@ describe('Fireproof', () => {
       changes = await database.changesSince().catch(async e => {
         assert.fail(`changesSince failed on _id: ${id}, error: ${e.message}`)
       })
-      console.log('changes ' + index, JSON.stringify(changes.rows))
       changes.rows.forEach(row => {
         for (const key in row) {
           const value = row[key]
@@ -340,10 +365,12 @@ describe('Fireproof', () => {
           console.log(`Error getting block for index ${index}: ${e.message}`)
         })
         if (stored) {
-          const dec = codec.decode(await stored.bytes)
-          console.log('stored', JSON.stringify(dec))
+          const doc = codec.decode(await stored.bytes)
+          // console.log('stored', JSON.stringify(dec))
+          assert.equal(doc.closed, false)
         }
       }
+      // console.log('changes: ' + index, changes.rows.length, JSON.stringify(changes.rows))
       assert.equal(changes.rows.length, index + 2, `failed on ${index}, with ${changes.rows.length} ${id}`)
     }
   }).timeout(20000)

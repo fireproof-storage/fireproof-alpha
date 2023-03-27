@@ -197,7 +197,6 @@ describe('DbIndex query', () => {
     assert(result2.rows)
     assert.equal(result2.rows.length, 0, '0 row matched')
   })
-  it.skip('reproduce missing block error from browser so we can turn off always rebuild', async () => {})
 })
 
 describe('DbIndex query with bad index definition', () => {
