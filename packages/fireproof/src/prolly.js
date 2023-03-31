@@ -5,8 +5,8 @@ import {
   findCommonAncestorWithSortedEvents,
   findEventsToSync
 } from './clock.js'
-// import { create, load } from 'prolly-trees/map'
-import { create, load } from '../../../../prolly-trees/src/map.js'
+import { create, load } from 'prolly-trees/map'
+// import { create, load } from '../../../../prolly-trees/src/map.js'
 import { nocache as cache } from 'prolly-trees/cache'
 import { CIDCounter, bf, simpleCompare as compare } from 'prolly-trees/utils'
 import * as codec from '@ipld/dag-cbor'
