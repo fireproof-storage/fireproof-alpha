@@ -43,6 +43,7 @@ export class Fireproof {
         code,
         clock: { byId, byKey, db }
       } of json.indexes) {
+        if (db && db.length === 0) throw new Error('ja')
         Index.fromJSON(database, {
           clock: {
             byId: byId ? parseCID(byId) : null,
