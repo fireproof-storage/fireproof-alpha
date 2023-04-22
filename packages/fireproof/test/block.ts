@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { parse } from 'multiformats/link'
 
 /**

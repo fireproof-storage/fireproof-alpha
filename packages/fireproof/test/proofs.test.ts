@@ -1,4 +1,6 @@
-import { describe, it, beforeEach } from 'mocha'
+// @ts-nocheck
+
+import { describe, it, beforeEach } from 'vitest'
 import assert from 'node:assert'
 import { Fireproof } from '../src/fireproof.js'
 

@@ -1,13 +1,13 @@
 // @ts-nocheck
-import { visMerkleClock, visMerkleTree, vis, put, get, getAll, eventsSince } from './prolly.js'
-import { doTransaction } from './blockstore.js'
+import { visMerkleClock, visMerkleTree, vis, put, get, getAll, eventsSince } from './prolly'
+import { doTransaction } from './blockstore'
 import charwise from 'charwise'
-import { localSet } from './utils.js'
+import { localSet } from './utils'
 import { CID } from 'multiformats'
 
 // TypeScript Types
 // eslint-disable-next-line no-unused-vars
-// import { CID } from 'multiformats/dist/types/src/cid.js'
+// import { CID } from 'multiformats/dist/types/src/cid'
 // eslint-disable-next-line no-unused-vars
 class Proof {}
 export const parseCID = cid => (typeof cid === 'string' ? CID.parse(cid) : cid)
@@ -18,7 +18,7 @@ export const parseCID = cid => (typeof cid === 'string' ? CID.parse(cid) : cid)
  *  This is the main class for saving and loading JSON and other documents with the database. You can find additional examples and
  *  usage guides in the repository README.
  *
- * @param {import('./blockstore.js').TransactionBlockstore} blocks - The block storage instance to use documents and indexes
+ * @param {import('./blockstore').TransactionBlockstore} blocks - The block storage instance to use documents and indexes
  * @param {CID[]} clock - The Merkle clock head to use for the Fireproof instance.
  * @param {object} [config] - Optional configuration options for the Fireproof instance.
  * @param {object} [authCtx] - Optional authorization context object to use for any authentication checks.

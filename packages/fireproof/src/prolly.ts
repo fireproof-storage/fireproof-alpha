@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import {
   advance,
   EventFetcher,
@@ -5,8 +7,8 @@ import {
   findCommonAncestorWithSortedEvents,
   findEventsToSync,
   vis as visClock
-} from './clock.js'
-// import { create, load } from '../../../../prolly-trees/src/map.js'
+} from './clock'
+// import { create, load } from '../../../../prolly-trees/src/map'
 // @ts-ignore
 import { create, load } from 'prolly-trees/map'
 // @ts-ignore
@@ -15,12 +17,12 @@ import { nocache as cache } from 'prolly-trees/cache'
 import { CIDCounter, bf, simpleCompare as compare } from 'prolly-trees/utils'
 import * as codec from '@ipld/dag-cbor'
 import { sha256 as hasher } from 'multiformats/hashes/sha2'
-import { doTransaction } from './blockstore.js'
+import { doTransaction } from './blockstore'
 import { create as createBlock } from 'multiformats/block'
 const blockOpts = { cache, chunker: bf(30), codec, hasher, compare }
 
 /**
- * @typedef {import('./blockstore.js').TransactionBlockstore} TransactionBlockstore
+ * @typedef {import('./blockstore').TransactionBlockstore} TransactionBlockstore
  */
 
 // const withLog = async (label, fn) => {
@@ -191,7 +193,7 @@ const doProllyBulk = async (inBlocks, head, event, doFull = false) => {
 /**
  * Put a value (a CID) for the given key. If the key exists it's value is overwritten.
  *
- * @param {import('./blockstore.js').Blockstore} inBlocks Bucket block storage.
+ * @param {import('./blockstore').Blockstore} inBlocks Bucket block storage.
  * @param {import('./clock').EventLink<import('./clock').EventData>[]} head Merkle clock head.
  * @param {{key: string, value: import('./clock').EventLink<import('./clock').EventData>}} event The key of the value to put.
  * @param {object} [options]

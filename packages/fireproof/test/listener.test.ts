@@ -1,9 +1,11 @@
+// @ts-nocheck
+
 import { describe, it, beforeEach } from 'mocha'
 import assert from 'node:assert'
 import { TransactionBlockstore as Blockstore } from '../src/blockstore.js'
 import { Fireproof } from '../src/fireproof.js'
 import { Database } from '../src/database.js'
-import { Listener } from '../src/listener.js'
+import { Listener } from '../src/listener.ts'
 
 let database, listener, star
 

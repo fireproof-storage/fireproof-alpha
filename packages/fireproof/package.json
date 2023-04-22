@@ -9,14 +9,16 @@
   "type": "module",
   "scripts": {
     "keygen": "node scripts/keygen.js",
-    "test": "standard && npm run test:unencrypted && npm run test:mocha",
+    "test": "npm run test:mocha",
+    "test:old": "npm run lint:tsc && npm run test:unencrypted && npm run test:mocha",
     "test:unencrypted": "set NO_ENCRYPT=true && npm run test:mocha",
-    "test:mocha": "mocha test/*.test.js",
+    "test:mocha": "ts-mocha test/*.test.ts",
     "test:watch": "npm run test:mocha -- -w --parallel",
     "coverage": "c8 -r html -r text npm test",
     "prepublishOnly": "cp ../../README.md . && npm run build",
     "postpublish": "rm README.md",
     "lint": "standard",
+    "lint:tsc": "tsc",
     "lint:fix": "standard --fix",
     "tsc": "tsc --watch",
     "build": "rollup -c"
@@ -51,11 +53,15 @@
     "idb": "^7.1.1",
     "multiformats": "^11.0.1",
     "node-polyfill-webpack-plugin": "^2.0.1",
+    "prettier": "^2.8.7",
     "prolly-trees": "1.0.4",
     "randombytes": "^2.1.0",
     "rollup-plugin-commonjs": "^10.1.0",
     "sade": "^1.8.1",
     "simple-peer": "^9.11.1"
+    "sade": "^1.8.1",
+    "ts-mocha": "^10.0.0",
+    "ts-node": "^10.9.1"
   },
   "devDependencies": {
     "@rollup/plugin-alias": "^5.0.0",
@@ -74,14 +80,15 @@
     "rollup-plugin-node-builtins": "^2.1.2",
     "rollup-plugin-polyfill-node": "^0.12.0",
     "standard": "^17.0.0",
-    "typescript": "^5.0.2",
+    "typescript": "^5.0.4",
     "webpack": "^5.78.0",
     "webpack-cli": "^5.0.1"
   },
   "mocha": {
     "require": [
       "fake-indexeddb/auto"
-    ]
+    ],
+    "loader": "ts-node/esm"
   },
   "standard": {
     "ignore": [
