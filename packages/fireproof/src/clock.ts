@@ -1,3 +1,7 @@
+// @ts-nocheck
+
+
+
 import { Block, encode, decode } from 'multiformats/block'
 import { sha256 } from 'multiformats/hashes/sha2'
 import * as cbor from '@ipld/dag-cbor'

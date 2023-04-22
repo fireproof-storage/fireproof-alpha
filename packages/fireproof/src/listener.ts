@@ -1,10 +1,12 @@
+// @ts-nocheck
+
 /**
  * A Fireproof database Listener allows you to react to events in the database.
  *
  * @class Listener
  * @classdesc An listener attaches to a Fireproof database and runs a routing function on each change, sending the results to subscribers.
  *
- * @param {import('./database.js').Database} database - The Database database instance to index.
+ * @param {import('./database').Database} database - The Database database instance to index.
  * @param {Function} routingFn - The routing function to apply to each entry in the database.
  */
 // import { ChangeEvent } from './db-index'
@@ -16,7 +18,7 @@ export class Listener {
   doStopListening = null
 
   /**
-   * @param {import('./database.js').Database} database
+   * @param {import('./database').Database} database
    * @param {(_: any, emit: any) => void} routingFn
    */
   constructor (

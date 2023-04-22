@@ -38,7 +38,7 @@ You might need to import { nodePolyfills } from 'vite-plugin-node-polyfills' in 
 @param {function(database): Promise<void>} [setupDatabaseFn] - Asynchronous function that sets up the database, run this to load fixture data etc
 @returns {FireproofCtxValue} { useLiveQuery, useLiveDocument, database, ready }
 */
-export function useFireproof (name = 'useFireproof', defineDatabaseFn = () => {}, setupDatabaseFn = async () => {}) {
+export function useFireproof (name = 'useFireproof', defineDatabaseFn = (database:any) => {}, setupDatabaseFn = async (database:any) => {}) {
   const [ready, setReady] = useState(false)
   initializeDatabase(name)
 

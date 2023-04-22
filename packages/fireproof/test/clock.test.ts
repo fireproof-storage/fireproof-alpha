@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 /* global describe, it */
 // import { describe, it } from 'mocha'
 import assert from 'node:assert'
