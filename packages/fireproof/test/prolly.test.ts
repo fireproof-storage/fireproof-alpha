@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import { describe, it } from 'mocha'
+import { describe, it } from 'vitest'
 import assert from 'node:assert'
 import { advance } from '../src/clock.js'
 
@@ -131,7 +131,7 @@ describe('Prolly', () => {
       // assert.equal(vx.toString(), value.toString())
     }
     // console.log('blocks', Array.from(blocks.entries()).length)
-  }).timeout(10000)
+  })
 })
 
 class TestPail {

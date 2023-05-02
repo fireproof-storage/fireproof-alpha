@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import { describe, it, beforeEach } from 'mocha'
+import { describe, it, beforeEach } from 'vitest'
 import assert from 'node:assert'
 import { Fireproof } from '../src/fireproof.js'
 import flexsearch from 'flexsearch'
