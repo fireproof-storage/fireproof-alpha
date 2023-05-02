@@ -1,10 +1,9 @@
 // @ts-nocheck
 
-import { describe, it, beforeEach,assert } from 'vitest'
+import { describe, it, beforeEach, assert } from 'vitest'
 import { Fireproof } from '../src/fireproof.js'
 import { DbIndex } from '../src/db-index.js'
-import "fake-indexeddb/auto";
-
+import 'fake-indexeddb/auto'
 
 describe('DbIndex query', () => {
   let database, index
@@ -273,9 +272,12 @@ describe.only('DbIndex query with bad index definition', () => {
   it('query index range', async () => {
     const oldErrFn = console.error
     console.error = () => {}
-    await index.query({ range: [41, 44] }).catch((e) => {
+    try {
+      await index.query({ range: [41, 44] })
+    } catch (e) {
       assert(/missingField/.test(e.message))
+    } finally {
       console.error = oldErrFn
-    })
+    }
   })
 })

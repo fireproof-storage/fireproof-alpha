@@ -60,8 +60,7 @@
     "randombytes": "^2.1.0",
     "rollup-plugin-commonjs": "^10.1.0",
     "sade": "^1.8.1",
-    "simple-peer": "^9.11.1"
-    "sade": "^1.8.1",
+    "simple-peer": "^9.11.1",
     "ts-mocha": "^10.0.0",
     "ts-node": "^10.9.1",
     "vite": "^4.3.1",

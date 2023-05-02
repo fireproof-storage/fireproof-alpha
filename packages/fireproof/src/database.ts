@@ -29,6 +29,8 @@ export class Database {
   indexes = new Map()
   rootCache = null
   eventsCache = new Map()
+  blocks: any
+  clock: any
 
   constructor (blocks, clock, config = {}) {
     this.name = config.name

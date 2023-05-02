@@ -228,8 +228,8 @@ export class DbIndex {
   }
 
   async innerUpdateIndex (inBlocks) {
-    // const callTag = Math.random().toString(36).substring(4)
-    // console.log(`updateIndex ${callTag} >`, this.instanceId, this.dbHead?.toString(), this.indexByKey.cid?.toString(), this.indexById.cid?.toString())
+    const callTag = Math.random().toString(36).substring(4)
+    console.log(`updateIndex ${callTag} >`, this.instanceId, this.dbHead?.toString(), this.indexByKey.cid?.toString(), this.indexById.cid?.toString())
     // todo remove this hack
     if (ALWAYS_REBUILD) {
       this.indexById = { root: null, cid: null }

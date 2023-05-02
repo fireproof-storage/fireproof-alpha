@@ -8,13 +8,19 @@ import { CarReader } from '@ipld/car'
  * @typedef {import('./database.js').Database} Database
  */
 export class Sync {
+  PeerClass: any
+  database: Database
+  pushBacklog: Promise<unknown>
+  pushBacklogResolve: (value: unknown) => void
+  pushBacklogReject: (reason?: any) => void
+  peer: any
   /**
    * @param {Database} database
    * @param {typeof SimplePeer} [PeerClass]
    * @memberof Sync
    * @static
    */
-  constructor (database, PeerClass = SimplePeer) {
+  constructor (database: Database, PeerClass: typeof SimplePeer = SimplePeer) {
     this.database = database
     this.database.blocks.syncs.add(this) // should this happen during setup?
     this.PeerClass = PeerClass
@@ -158,7 +164,7 @@ export class Sync {
    * @param {import("./database.js").Database} database
    * @param {string} key
    */
-  static async makeCar (database, key, skip = []) {
+  static async makeCar (database: import("./database.js").Database, key: string, skip = []) {
     const allCIDs = await database.allCIDs()
     const blocks = database.blocks
     const rootCIDs = database.clock

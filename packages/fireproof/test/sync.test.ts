@@ -1,6 +1,6 @@
-import { describe, it, beforeEach } from 'mocha'
+import { describe, it, beforeEach } from 'vitest'
 import assert from 'node:assert'
-import { Fireproof, Sync } from '../src/fireproof.js'
+import { Fireproof, Sync } from '../src/fireproof'
 
 describe('Sync valet', () => {
   let database
@@ -200,7 +200,7 @@ describe('Sync', () => {
 
     // const result4 = await database.get('f4s35c')
     // assert.equal(result4.name, 'Frank')
-  }).timeout(10000)
+  })// .timeout(10000)
   it('two database that start out different')
   it('use promise all to write a lot in parallel')
   it('with a medium clock', async () => {
@@ -280,7 +280,7 @@ describe('Sync', () => {
 
     // const result4 = await database.get('f4s35c')
     // assert.equal(result4.name, 'Frank')
-  }).timeout(10000)
+  })// .timeout(10000)
 })
 
 async function setupSync (dbA, dbB) {
