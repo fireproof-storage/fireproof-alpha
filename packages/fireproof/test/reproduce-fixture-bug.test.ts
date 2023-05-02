@@ -1,6 +1,8 @@
 // @ts-nocheck
 
-import { describe, it, beforeEach } from 'mocha'
+import "fake-indexeddb/auto";
+
+import { describe, it, beforeEach } from 'vitest'
 import assert from 'node:assert'
 import { Fireproof } from '../src/fireproof.js'
 import { DbIndex } from '../src/db-index.js'

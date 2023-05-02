@@ -1,9 +1,9 @@
 // @ts-nocheck
 
-import { describe, it, beforeEach } from 'mocha'
-import assert from 'node:assert'
+import { describe, it, beforeEach,assert } from 'vitest'
 import { Fireproof } from '../src/fireproof.js'
 // import * as codec from '@ipld/dag-cbor'
+import "fake-indexeddb/auto";
 
 let database, resp0
 
@@ -437,7 +437,7 @@ describe('Fireproof', () => {
       // console.log('changes: ', index, changes.rows.length, JSON.stringify(changes.rows))
       assert.equal(changes.rows.length, index + 2, `failed on ${index}, with ${changes.rows.length} ${id}`)
     }
-  }).timeout(30000)
+  })
 
   it('concurrent transactions', async () => {
     assert.equal((await database.changesSince()).rows.length, 1)
@@ -472,7 +472,7 @@ describe('Fireproof', () => {
     // console.log('all', await database.allDocuments())
     assert.equal((await database.allDocuments()).rows.length, 21)
     assert.equal((await database.changesSince()).rows.length, 21)
-  }).timeout(20000)
+  })
   it('serialize database', async () => {
     await database.put({ _id: 'rehy', name: 'drate' })
     assert.equal((await database.changesSince()).rows.length, 2)

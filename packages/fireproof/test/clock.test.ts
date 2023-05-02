@@ -1,8 +1,7 @@
 // @ts-nocheck
 
 /* global describe, it */
-// import { describe, it } from 'mocha'
-import assert from 'node:assert'
+ import { describe, it, assert } from 'vitest'
 import { advance, EventBlock, decodeEventBlock, findEventsToSync as findEventsWithProofToSync } from '../src/clock.js'
 // import { vis } from '../src/clock.js'
 import { Blockstore, seqEventData, setSeq } from './helpers.js'

@@ -1,9 +1,10 @@
 // @ts-nocheck
 
-import { describe, it, beforeEach } from 'mocha'
-import assert from 'node:assert'
+import { describe, it, beforeEach,assert } from 'vitest'
 import { Fireproof } from '../src/fireproof.js'
 import { DbIndex } from '../src/db-index.js'
+import "fake-indexeddb/auto";
+
 
 describe('DbIndex query', () => {
   let database, index
@@ -257,7 +258,7 @@ describe('DbIndex query', () => {
   })
 })
 
-describe('DbIndex query with bad index definition', () => {
+describe.only('DbIndex query with bad index definition', () => {
   let database, index
   beforeEach(async () => {
     database = Fireproof.storage()

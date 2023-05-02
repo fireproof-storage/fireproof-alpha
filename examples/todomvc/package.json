@@ -11,30 +11,30 @@
   },
   "dependencies": {
     "@fireproof/core": "workspace:^",
-    "@w3ui/react-keyring": "^3.0.1",
-    "@web3-storage/capabilities": "^3.2.0",
-    "@web3-storage/upload-client": "^6.0.0",
+    "@w3ui/react-keyring": "^5.1.1",
+    "@web3-storage/capabilities": "^4.0.1",
+    "@web3-storage/upload-client": "^8.3.0",
     "async": "^3.2.4",
     "buffer": "^6.0.3",
     "classnames": "^2.3.2",
     "crypto-browserify": "^3.12.0",
     "debounce": "^1.2.1",
-    "immer": "^9.0.19",
+    "immer": "^10.0.1",
     "lodash.throttle": "^4.1.1",
     "randombytes": "^2.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router": "^6.8.1",
-    "react-router-dom": "^6.8.1",
+    "react-router": "^6.10.0",
+    "react-router-dom": "^6.10.0",
     "todomvc-app-css": "^2.4.2",
     "todomvc-common": "^1.0.5"
   },
   "devDependencies": {
-    "@types/react": "^18.0.27",
+    "@types/react": "^18.0.38",
     "@types/react-dom": "^18.0.10",
-    "@vitejs/plugin-react": "^3.1.0",
-    "typescript": "^4.9.3",
-    "vite": "^4.1.0",
-    "vite-plugin-node-polyfills": "^0.7.0"
+    "@vitejs/plugin-react": "^4.0.0",
+    "typescript": "^5.0.4",
+    "vite": "^4.3.1",
+    "vite-plugin-node-polyfills": "^0.8.1"
   }
 }

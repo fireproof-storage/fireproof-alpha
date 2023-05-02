@@ -1,6 +1,9 @@
 // @ts-nocheck
 
-import { describe, it, beforeEach } from 'mocha'
+import "fake-indexeddb/auto";
+
+
+import { describe, it, beforeEach } from 'vitest'
 import assert from 'node:assert'
 import { Fireproof } from '../src/fireproof.js'
 import { DbIndex } from '../src/db-index.js'
@@ -40,8 +43,8 @@ describe('Hydrator', () => {
     assert.equal(serialized.clock.length, 1)
     assert.equal(serialized.clock[0].constructor.name, 'String')
     assert.equal(serialized.indexes.length, 1)
-    assert.equal(serialized.indexes[0].code, `function (doc, map) {
-      map(doc.age, doc.name)
+    assert.equal(serialized.indexes[0].code, `function(doc, map) {
+      map(doc.age, doc.name);
     }`)
     assert.equal(serialized.indexes[0].name, 'names_by_age')
 
@@ -63,8 +66,8 @@ describe('Hydrator', () => {
     assert.equal(newDb.clock.length, 1)
     assert.equal((await newDb.changesSince()).rows.length, 7)
     const newIndex = [...newDb.indexes.values()][0]
-    assert.equal(newIndex.mapFn, `function (doc, map) {
-      map(doc.age, doc.name)
+    assert.equal(newIndex.mapFn.toString(), `function(doc, map) {
+      map(doc.age, doc.name);
     }`)
     assert.match(newIndex.indexById.cid.toString(), /bafyr/)
     // assert.equal(newIndex.indexById.root, null)
@@ -115,8 +118,8 @@ describe('hydrator query with dbname', () => {
     assert.equal(serialized.clock.length, 1)
     assert.equal(serialized.clock[0].constructor.name, 'String')
     assert.equal(serialized.indexes.length, 1)
-    assert.equal(serialized.indexes[0].code, `function (doc, map) {
-      map(doc.age, doc.name)
+    assert.equal(serialized.indexes[0].code, `function(doc, map) {
+      map(doc.age, doc.name);
     }`)
     assert.equal(serialized.indexes[0].name, 'names_by_age')
 
@@ -138,8 +141,8 @@ describe('hydrator query with dbname', () => {
     assert.equal(newDb.clock.length, 1)
     assert.equal((await newDb.changesSince()).rows.length, 7)
     const newIndex = [...newDb.indexes.values()][0]
-    assert.equal(newIndex.mapFn, `function (doc, map) {
-      map(doc.age, doc.name)
+    assert.equal(newIndex.mapFn, `function(doc, map) {
+      map(doc.age, doc.name);
     }`)
     assert.match(newIndex.indexById.cid.toString(), /bafyr/)
     // assert.equal(newIndex.indexById.root, null)

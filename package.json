@@ -22,17 +22,15 @@
     "Mikeal Rogers"
   ],
   "license": "Apache-2.0 OR MIT",
-  "dependencies": {
-  },
   "devDependencies": {
     "c8": "^7.12.0",
-    "clean-jsdoc-theme": "^4.2.6",
+    "clean-jsdoc-theme": "^4.2.7",
     "fake-indexeddb": "^4.0.1",
     "jsdoc": "^4.0.2",
     "jsdoc-plugin-typescript": "^2.2.1",
-    "jsdoc-ts-utils": "^3.1.0",
+    "jsdoc-ts-utils": "^4.0.0",
     "mocha": "^10.2.0",
-    "nanoid": "^4.0.0",
+    "nanoid": "^4.0.2",
     "standard": "^17.0.0"
   },
   "repository": {
@@ -42,5 +40,8 @@
   "bugs": {
     "url": "https://github.com/jchris/fireproof/issues"
   },
-  "homepage": "https://github.com/jchris/fireproof#readme"
+  "homepage": "https://github.com/jchris/fireproof#readme",
+  "dependencies": {
+    "prettier": "^2.8.8"
+  }
 }
