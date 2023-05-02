@@ -1,9 +1,9 @@
 // @ts-nocheck
 
-import { describe, it, beforeEach,assert } from 'vitest'
+import { describe, it, beforeEach, assert } from 'vitest'
 import { Fireproof } from '../src/fireproof.js'
 // import * as codec from '@ipld/dag-cbor'
-import "fake-indexeddb/auto";
+import 'fake-indexeddb/auto'
 
 let database = Fireproof.storage()
 
@@ -507,7 +507,7 @@ describe('Fireproof', () => {
       const doc = await database.get(i.toString())
       assert.equal(doc._id, i.toString())
     }
-  }).timeout(10000)
+  })// .timeout(10000)
 
   it('perf many changes in parallel', async () => {
     const ops = []
@@ -520,7 +520,7 @@ describe('Fireproof', () => {
       const doc = await database.get(i.toString())
       assert.equal(doc._id, i.toString())
     }
-  }).timeout(10000)
+  })// .timeout(10000)
 
   it.skip('changes in order', async () => {
     await database.put({ _id: '2' })
