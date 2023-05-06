@@ -59,12 +59,7 @@ async function createAndSaveNewEvent ({ inBlocks, root, event: inEvent, head, ad
   const data = {
     root: root
       ? root.cid
-      : // {
-    // cid: root.cid//,
-    // bytes: root.bytes, // can we remove this?
-    // value: root.value // can we remove this?
-    // }
-      null,
+      : null,
     key
   }
   // import('./clock').EventLink<import('./clock').EventData>
