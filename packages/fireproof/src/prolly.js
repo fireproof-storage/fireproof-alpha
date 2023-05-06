@@ -79,7 +79,7 @@ async function createAndSaveNewEvent ({ inBlocks, root, event: inEvent, head, ad
       emptyRoot = await node.block
       bigPut(emptyRoot)
     }
-    console.log('emptyRoot', emptyRoot)
+    // console.log('emptyRoot', emptyRoot)
     const first = await EventBlock.create(
       {
         root: emptyRoot.cid,
@@ -191,7 +191,7 @@ const doProllyBulk = async (inBlocks, head, event, doFull = false) => {
       // const {cids, events : bulkSorted } = await findEventsToSync(blocks, head)
       const { ancestor, sorted } = await findCommonAncestorWithSortedEvents(events, head, doFull)
       bulkSorted = sorted
-      console.log('sorted', ancestor, JSON.stringify(sorted.map(({ value: { data: { key, value } } }) => ({ key, value }))))
+      // console.log('sorted', ancestor, JSON.stringify(sorted.map(({ value: { data: { key, value } } }) => ({ key, value }))))
       if (ancestor) {
         prollyRootNode = await prollyRootFromAncestor(events, ancestor, getBlock)
         if (!prollyRootNode) {

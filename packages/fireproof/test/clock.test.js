@@ -65,11 +65,11 @@ describe('Clock', () => {
     const { events: toSync } = await findEventsToSync(blocks, [head3, head4])
 
     // Print the toSync array for debugging purposes
-    console.log('toSync:', toSync.map(event => event.cid.toString()))
+    // console.log('toSync:', toSync.map(event => event.cid.toString()))
 
     // Verify that the toSync array contains both grandchild events and the root event
     const expectedCids = new Set([grandchild1.cid.toString(), grandchild2.cid.toString(), child1.cid.toString(), child2.cid.toString()])
-    console.log('expectedCids:', expectedCids)
+    // console.log('expectedCids:', expectedCids)
     assert.equal(toSync.length, 4)
     toSync.forEach(event => {
       assert(expectedCids.has(event.cid.toString()))

@@ -237,11 +237,11 @@ export async function findEventsToSync (blocks, head) {
   // console.time(callTag + '.findCommonAncestorWithSortedEvents')
   const { ancestor, sorted } = await findCommonAncestorWithSortedEvents(events, head)
   // console.timeEnd(callTag + '.findCommonAncestorWithSortedEvents')
-  console.log('sorted', sorted.length)
+  // console.log('sorted', sorted.length)
   // console.time(callTag + '.contains')
   const toSync = await asyncFilter(sorted, async uks => !(await contains(events, ancestor, uks.cid)))
   // console.timeEnd(callTag + '.contains')
-  console.log('toSync.contains', toSync.length)
+  // console.log('toSync.contains', toSync.length)
 
   return { cids: events, events: toSync }
 }
@@ -258,14 +258,14 @@ export async function findCommonAncestorWithSortedEvents (events, children, doFu
   // console.timeEnd(callTag + '.findCommonAncestor')
   // console.log('ancestor', ancestor.toString())
   if (!ancestor) {
-    console.log('no common ancestor')
+    console.log('no lowest common ancestor')
     return { ancestor: null, sorted: [] }
   }
   // console.time(callTag + '.findSortedEvents')
   const sorted = await findSortedEvents(events, children, ancestor, doFull)
   // console.timeEnd(callTag + '.findSortedEvents')
-  console.log('sorted', sorted.length)
-  console.log('ancestor', JSON.stringify(ancestor, null, 2))
+  // console.log('sorted', sorted.length)
+  // console.log('ancestor', JSON.stringify(ancestor, null, 2))
   return { ancestor, sorted }
 }
 

@@ -113,7 +113,7 @@ export class Database {
 
       let resp
       if (this.eventsCache.has(eventKey)) {
-        console.log('events from cache')
+        // console.log('events from cache')
         resp = this.eventsCache.get(eventKey)
       } else {
         resp = await eventsSince(this.blocks, this.clock, event)
@@ -287,7 +287,7 @@ export class Database {
       }
     }
     const prevClock = [...this.clock]
-    console.log('putToProllyTree', this.clockToJSON())
+    // console.log('putToProllyTree', this.clockToJSON())
     const result = await doTransaction(
       'putToProllyTree',
       this.blocks,

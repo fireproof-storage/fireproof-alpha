@@ -105,7 +105,7 @@ describe('Fireproof', () => {
     const del = await database.del(theDoc)
     assert(del.id)
     const err = await database.put(theDoc).catch((err) => err)
-    console.log('err', err)
+    // console.log('err', err)
     assert.match(err.message, /MVCC conflict/)
   })
   it('allDocuments', async () => {
