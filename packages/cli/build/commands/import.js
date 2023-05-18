@@ -123,10 +123,12 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.loadData = loadData;
 exports.loadDatabase = loadDatabase;
 var _core = require("@fireproof/core");
 var _fs = require("fs");
 var _path = require("path");
+var _core2 = require("@jsonlines/core");
 const config = {
   dataDir: '~/.fireproof'
 };
@@ -148,6 +150,16 @@ function loadClock(database) {
   }
   return clock;
 }
+function loadData(database, filename) {
+  const fullFilePath = (0, _path.join)(process.cwd(), filename);
+  const readableStream = (0, _fs.createReadStream)(fullFilePath);
+  const parseStream = (0, _core2.parse)();
+  readableStream.pipe(parseStream);
+  parseStream.on('data', async data => {
+    const ok = await database.put(data);
+    console.log('put', ok);
+  });
+}
 },{}],"import.js":[function(require,module,exports) {
 "use strict";
 
@@ -158,9 +170,6 @@ exports.default = void 0;
 var _react = _interopRequireWildcard(require("react"));
 var _propTypes = _interopRequireDefault(require("prop-types"));
 var _ink = require("ink");
-var _path = require("path");
-var _fs = require("fs");
-var _core = require("@jsonlines/core");
 var _config = require("../src/config.js");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
@@ -173,15 +182,8 @@ const Import = ({
   const [stage, setStage] = (0, _react.useState)('initializing');
   const [db, setDb] = (0, _react.useState)(null);
   const loadFile = (0, _react.useCallback)(() => {
-    const fullFilePath = (0, _path.join)(process.cwd(), filename);
     setStage('importing');
-    const readableStream = (0, _fs.createReadStream)(fullFilePath);
-    const parseStream = (0, _core.parse)();
-    readableStream.pipe(parseStream);
-    parseStream.on('data', async data => {
-      const ok = await db.put(data);
-      console.log('put', ok);
-    });
+    (0, _config.loadData)(database, filename);
   }, [filename]);
   const initDatabase = (0, _react.useCallback)(() => {
     // use the database name to see if there is a directory in the root directory with that name

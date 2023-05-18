@@ -127,6 +127,7 @@ exports.default = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _propTypes = _interopRequireDefault(require("prop-types"));
 var _ink = require("ink");
+var _core = require("@jsonlines/core");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 /// Hello world command
 const Hello = ({

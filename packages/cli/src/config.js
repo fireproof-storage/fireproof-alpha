@@ -1,6 +1,7 @@
 import { Fireproof } from '@fireproof/core'
-import { readFileSync } from 'fs'
+import { readFileSync, createReadStream } from 'fs'
 import { join } from 'path'
+import { parse } from '@jsonlines/core'
 
 const config = {
   dataDir: '~/.fireproof'
@@ -24,4 +25,15 @@ function loadClock (database) {
     clock = null
   }
   return clock
+}
+
+export function loadData (database, filename) {
+  const fullFilePath = join(process.cwd(), filename)
+  const readableStream = createReadStream(fullFilePath)
+  const parseStream = parse()
+  readableStream.pipe(parseStream)
+  parseStream.on('data', async (data) => {
+    const ok = await database.put(data)
+    console.log('put', ok)
+  })
 }

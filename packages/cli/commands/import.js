@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { Text } from 'ink'
-import { join } from 'path'
-import { createReadStream } from 'fs'
-import { parse } from '@jsonlines/core'
-import { loadDatabase } from '../src/config.js'
+
+import { loadDatabase, loadData } from '../src/config.js'
 
 /// Import data into a database
 const Import = ({ database, filename }) => {
@@ -12,15 +10,8 @@ const Import = ({ database, filename }) => {
   const [db, setDb] = useState(null)
 
   const loadFile = useCallback(() => {
-    const fullFilePath = join(process.cwd(), filename)
     setStage('importing')
-    const readableStream = createReadStream(fullFilePath)
-    const parseStream = parse()
-    readableStream.pipe(parseStream)
-    parseStream.on('data', async (data) => {
-      const ok = await db.put(data)
-      console.log('put', ok)
-    })
+    loadData(database, filename)
   }, [filename])
 
   const initDatabase = useCallback(() => {
