@@ -1,6 +1,35 @@
 {
 	"commands": [
 		{
+			"description": "Import data into a database",
+			"positionalArgs": [
+				"database",
+				"file"
+			],
+			"args": [
+				{
+					"key": "database",
+					"type": "string",
+					"description": "Name of the database to use, will create if necessary",
+					"isRequired": true,
+					"aliases": [],
+					"positional": true
+				},
+				{
+					"key": "file",
+					"type": "string",
+					"description": "Path to a JSON file to import",
+					"isRequired": true,
+					"aliases": [],
+					"positional": true
+				}
+			],
+			"isIndex": false,
+			"name": "import",
+			"path": "import.js",
+			"subCommands": []
+		},
+		{
 			"description": "Hello world command",
 			"positionalArgs": [],
 			"args": [
