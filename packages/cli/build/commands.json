@@ -1,0 +1,22 @@
+{
+	"commands": [
+		{
+			"description": "Hello world command",
+			"positionalArgs": [],
+			"args": [
+				{
+					"key": "name",
+					"type": "string",
+					"description": "Name of the person to greet",
+					"isRequired": true,
+					"aliases": [],
+					"positional": false
+				}
+			],
+			"isIndex": true,
+			"name": "*",
+			"path": "index.js",
+			"subCommands": []
+		}
+	]
+}

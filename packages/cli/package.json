@@ -1,0 +1,23 @@
+{
+	"name": "@fireproof/cli",
+	"version": "0.0.1-dev",
+	"license": "MIT",
+	"bin": "./build/cli.js",
+	"engines": {
+		"node": ">=8"
+	},
+	"scripts": {
+		"dev": "pastel dev",
+		"build": "pastel build",
+		"prepare": "pastel build"
+	},
+	"files": [
+		"build"
+	],
+	"dependencies": {
+		"ink": "^2.7.1",
+		"pastel": "^1.1.1",
+		"prop-types": "^15.8.1",
+		"react": "^16.14.0"
+	}
+}
