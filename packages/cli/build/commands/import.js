@@ -165,14 +165,5 @@ Import.propTypes = {
 Import.positionalArgs = ['database', 'filename'];
 var _default = Import;
 exports.default = _default;
-function read(filePath) {
-  const readableStream = fs.createReadStream(filePath);
-  readableStream.on('error', function (error) {
-    console.log(`error: ${error.message}`);
-  });
-  readableStream.on('data', chunk => {
-    console.log(chunk);
-  });
-}
 },{}]},{},["import.js"], null)
 //# sourceMappingURL=/import.js.map

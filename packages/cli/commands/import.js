@@ -19,8 +19,6 @@ const Import = ({ database, filename }) => {
     readableStream.pipe(parseStream)
     parseStream.on('data', (data) => {
 
-
-
     })
   }, [filename])
 
@@ -42,15 +40,3 @@ Import.propTypes = {
 Import.positionalArgs = ['database', 'filename']
 
 export default Import
-
-function read (filePath) {
-  const readableStream = fs.createReadStream(filePath)
-
-  readableStream.on('error', function (error) {
-    console.log(`error: ${error.message}`)
-  })
-
-  readableStream.on('data', (chunk) => {
-    console.log(chunk)
-  })
-}
