@@ -117,7 +117,38 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"import.js":[function(require,module,exports) {
+})({"../src/config.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.loadDatabase = loadDatabase;
+var _core = require("@fireproof/core");
+var _fs = require("fs");
+var _path = require("path");
+const config = {
+  dataDir: '~/.fireproof'
+};
+function loadDatabase(database) {
+  const clock = loadClock(database);
+  if (clock) {
+    throw new Error(`Database ${database} already exists`);
+  } else {
+    return _core.Fireproof.storage(database);
+  }
+}
+function loadClock(database) {
+  const clockFile = (0, _path.join)(config.dataDir, database, 'clock.json');
+  let clock;
+  try {
+    clock = JSON.parse((0, _fs.readFileSync)(clockFile, 'utf8'));
+  } catch (err) {
+    clock = null;
+  }
+  return clock;
+}
+},{}],"import.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -130,29 +161,41 @@ var _ink = require("ink");
 var _path = require("path");
 var _fs = require("fs");
 var _core = require("@jsonlines/core");
+var _config = require("../src/config.js");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
-// import { readFile } from 'fs/promises'
-
 /// Import data into a database
 const Import = ({
   database,
   filename
 }) => {
   const [stage, setStage] = (0, _react.useState)('initializing');
+  const [db, setDb] = (0, _react.useState)(null);
   const loadFile = (0, _react.useCallback)(() => {
     const fullFilePath = (0, _path.join)(process.cwd(), filename);
-    setStage('loading');
+    setStage('importing');
     const readableStream = (0, _fs.createReadStream)(fullFilePath);
     const parseStream = (0, _core.parse)();
     readableStream.pipe(parseStream);
-    parseStream.on('data', data => {});
+    parseStream.on('data', async data => {
+      const ok = await db.put(data);
+      console.log('put', ok);
+    });
   }, [filename]);
+  const initDatabase = (0, _react.useCallback)(() => {
+    // use the database name to see if there is a directory in the root directory with that name
+    // if not, create it
+    setStage('loading');
+    setDb((0, _config.loadDatabase)(database));
+  }, [database]);
   (0, _react.useEffect)(() => {
-    // load the file from the filesystem, based on the file path and the directory the user is running the command from
-    // parse the file as JSON
-    loadFile();
+    if (db) {
+      loadFile();
+    }
+  }, [db]);
+  (0, _react.useEffect)(() => {
+    initDatabase();
   }, []);
   return /*#__PURE__*/_react.default.createElement(_ink.Text, null, "Importing ", filename, " to ", database, ". Stage: ", stage);
 };
@@ -165,5 +208,5 @@ Import.propTypes = {
 Import.positionalArgs = ['database', 'filename'];
 var _default = Import;
 exports.default = _default;
-},{}]},{},["import.js"], null)
+},{"../src/config.js":"../src/config.js"}]},{},["import.js"], null)
 //# sourceMappingURL=/import.js.map

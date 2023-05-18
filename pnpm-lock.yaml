@@ -79,12 +79,14 @@ importers:
 
   packages/cli:
     specifiers:
+      '@fireproof/core': workspace:^0.6.2
       '@jsonlines/core': ^1.0.2
       ink: ^2.7.1
       pastel: ^1.1.1
       prop-types: ^15.8.1
       react: ^16.14.0
     dependencies:
+      '@fireproof/core': link:../fireproof
       '@jsonlines/core': 1.0.2
       ink: 2.7.1_react@16.14.0
       pastel: 1.1.1_uwxxi2asbvkn6xa7uzsgscnamm
