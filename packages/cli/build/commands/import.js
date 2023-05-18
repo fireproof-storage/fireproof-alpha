@@ -127,24 +127,52 @@ exports.default = void 0;
 var _react = _interopRequireWildcard(require("react"));
 var _propTypes = _interopRequireDefault(require("prop-types"));
 var _ink = require("ink");
+var _path = require("path");
+var _fs = require("fs");
+var _core = require("@jsonlines/core");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+// import { readFile } from 'fs/promises'
+
 /// Import data into a database
 const Import = ({
   database,
-  file
+  filename
 }) => {
-  return /*#__PURE__*/_react.default.createElement(_ink.Text, null, "Importing ", file, " to ", database);
+  const [stage, setStage] = (0, _react.useState)('initializing');
+  const loadFile = (0, _react.useCallback)(() => {
+    const fullFilePath = (0, _path.join)(process.cwd(), filename);
+    setStage('loading');
+    const readableStream = (0, _fs.createReadStream)(fullFilePath);
+    const parseStream = (0, _core.parse)();
+    readableStream.pipe(parseStream);
+    parseStream.on('data', data => {});
+  }, [filename]);
+  (0, _react.useEffect)(() => {
+    // load the file from the filesystem, based on the file path and the directory the user is running the command from
+    // parse the file as JSON
+    loadFile();
+  }, []);
+  return /*#__PURE__*/_react.default.createElement(_ink.Text, null, "Importing ", filename, " to ", database, ". Stage: ", stage);
 };
 Import.propTypes = {
   /// Name of the database to use, will create if necessary
   database: _propTypes.default.string.isRequired,
   /// Path to a JSON file to import
-  file: _propTypes.default.string.isRequired
+  filename: _propTypes.default.string.isRequired
 };
-Import.positionalArgs = ['database', 'file'];
+Import.positionalArgs = ['database', 'filename'];
 var _default = Import;
 exports.default = _default;
+function read(filePath) {
+  const readableStream = fs.createReadStream(filePath);
+  readableStream.on('error', function (error) {
+    console.log(`error: ${error.message}`);
+  });
+  readableStream.on('data', chunk => {
+    console.log(chunk);
+  });
+}
 },{}]},{},["import.js"], null)
 //# sourceMappingURL=/import.js.map

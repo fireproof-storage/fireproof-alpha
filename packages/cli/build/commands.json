@@ -4,7 +4,7 @@
 			"description": "Import data into a database",
 			"positionalArgs": [
 				"database",
-				"file"
+				"filename"
 			],
 			"args": [
 				{
@@ -16,7 +16,7 @@
 					"positional": true
 				},
 				{
-					"key": "file",
+					"key": "filename",
 					"type": "string",
 					"description": "Path to a JSON file to import",
 					"isRequired": true,
