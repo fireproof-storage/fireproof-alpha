@@ -16,7 +16,7 @@ export interface FireproofCtxValue {
 export const FireproofCtx = createContext<FireproofCtxValue>({
   useLiveQuery: () => {},
   useLiveDocument: () => {},
-  database: new Database(null, []),
+  database: new Database(null),
   ready: false,
 });
 

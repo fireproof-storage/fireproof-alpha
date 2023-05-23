@@ -238,6 +238,7 @@ export class DbIndex {
    * @returns
    */
   async applyQuery (resp, query) {
+    console.log('applyQuery', resp, query)
     if (query.descending) {
       resp.result = resp.result.reverse()
     }
@@ -271,7 +272,7 @@ export class DbIndex {
       return await this.applyQuery(await this.indexByKey.root.range(...encodedRange), query)
     } else if (query.key) {
       const encodedKey = charwise.encode(query.key)
-      return await this.applyQuery(this.indexByKey.root.get(encodedKey), query)
+      return await this.applyQuery(await this.indexByKey.root.get(encodedKey), query)
     } else {
       const { result, ...all } = await this.indexByKey.root.getAllEntries()
       return await this.applyQuery(
