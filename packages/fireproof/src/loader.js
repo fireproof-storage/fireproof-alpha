@@ -20,6 +20,7 @@ export const Loader = {
     if (FORCE_IDB || isBrowser) {
       return new Browser(name, config)
     } else {
+      return new Browser(name, config)
       // return new Filesystem(name, config)
     }
   }
