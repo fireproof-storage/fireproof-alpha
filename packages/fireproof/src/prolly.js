@@ -35,15 +35,14 @@ const blockOpts = { cache, chunker: bf(30), codec, hasher, compare }
 
 // should also return a CIDCounter
 export const makeGetBlock = blocks => {
-  // const cids = new CIDCounter() // this could be used for proofs of mutations
+  const cids = new CIDCounter() // this could be used for proofs of mutations
   const getBlockFn = async address => {
-    // const { cid, bytes } = await withLog(address, () => blocks.get(address))
     const { cid, bytes } = await blocks.get(address)
-    // cids.add({ address: cid })
+    cids.add({ address: cid })
     return createBlock({ cid, bytes, hasher, codec })
   }
   return {
-    // cids,
+    cids,
     getBlock: getBlockFn
   }
 }
@@ -73,27 +72,6 @@ async function createAndSaveNewEvent ({ inBlocks, bigPut, root, event: inEvent, 
     data.type = 'put'
   }
   // console.log('head', head)
-  // if (head.length === 0) {
-  //   // create an empty prolly root
-  //   let emptyRoot
-
-  //   for await (const node of create({ get: getBlock, list: [{ key: '_sync', value: SYNC_ROOT }], ...blockOpts })) {
-  //     emptyRoot = await node.block
-  //     bigPut(emptyRoot)
-  //   }
-  //   console.log('emptyRoot', emptyRoot)
-  //   const first = await EventBlock.create(
-  //     {
-  //       root: emptyRoot.cid,
-  //       key: null,
-  //       value: null,
-  //       type: 'del'
-  //     },
-  //     []
-  //   )
-  //   bigPut(first)
-  //   head = [first.cid]
-  // }
 
   /** @type {import('./clock').EventData} */
   // @ts-ignore
@@ -175,7 +153,7 @@ const prollyRootFromAncestor = async (events, ancestor, getBlock) => {
 }
 
 const doProllyBulk = async (inBlocks, head, event, doFull = false) => {
-  const { getBlock, blocks } = makeGetAndPutBlock(inBlocks) // this is doubled with eventfetcher
+  const { getBlock, blocks, cids } = makeGetAndPutBlock(inBlocks) // this is doubled with eventfetcher
   let bulkSorted = []
   let prollyRootNode = null
   const events = new EventFetcher(blocks)
@@ -226,6 +204,7 @@ const doProllyBulk = async (inBlocks, head, event, doFull = false) => {
     return { root, blocks: newBlocks, clockCIDs: await events.all() }
   } else {
     const writeResp = await prollyRootNode.bulk(bulkOperations) // { root: newProllyRootNode, blocks: newBlocks }
+    writeResp.cids = cids
     writeResp.clockCIDs = await events.all()
     return writeResp
   }
@@ -246,13 +225,18 @@ export async function put (inBlocks, head, event, options) {
   // If the head is empty, we create a new event and return the root and addition blocks
   if (!head.length) {
     const additions = new Map()
-    const { root, blocks } = await doProllyBulk(inBlocks, head, event)
+    const { root, blocks, cids } = await doProllyBulk(inBlocks, head, event)
     for (const b of blocks) {
       bigPut(b, additions)
     }
+    // cids are removals, can be dropped from the cidToCar map?
+    // cidToCar map can be just root cids, if we when we load a car file we memory map all its cids???
     return createAndSaveNewEvent({ inBlocks, bigPut, root, event, head, additions: Array.from(additions.values()) })
   }
-  const { root: newProllyRootNode, blocks: newBlocks } = await doProllyBulk(inBlocks, head, event)
+  const { root: newProllyRootNode, blocks: newBlocks, cids } = await doProllyBulk(inBlocks, head, event)
+
+// cids are removals?
+
 
   if (!newProllyRootNode) {
     return createAndSaveNewEvent({
