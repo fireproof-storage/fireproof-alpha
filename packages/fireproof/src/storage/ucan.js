@@ -10,7 +10,6 @@ export class Ucan extends Base {
     super(name, Object.assign({}, defaultConfig, config))
     // console.log('Ucan', name, config)
     // at this point we are going to extend the ready handler to upload the history if theres no header
-    
   }
 
   headerURL (branch = 'main') {

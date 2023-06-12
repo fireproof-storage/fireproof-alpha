@@ -15,7 +15,7 @@ export class Sync {
    * @static
    */
   status = 'new'
-  constructor(database, PeerClass = SimplePeer) {
+  constructor (database, PeerClass = SimplePeer) {
     this.database = database
     this.database.blocks.syncs.add(this) // should this happen during setup?
     this.PeerClass = PeerClass
@@ -34,12 +34,12 @@ export class Sync {
     // })
   }
 
-  async offer() {
+  async offer () {
     this.status = 'offering'
     return this.setupPeer(true)
   }
 
-  async accept(base64offer) {
+  async accept (base64offer) {
     const offer = JSON.parse(atob(base64offer))
     const p = this.setupPeer(false)
     this.peer.signal(offer)
@@ -47,13 +47,13 @@ export class Sync {
     return p
   }
 
-  connect(base64accept) {
+  connect (base64accept) {
     const accept = JSON.parse(atob(base64accept))
     this.status = 'connecting'
     this.peer.signal(accept)
   }
 
-  async setupPeer(initiator = false) {
+  async setupPeer (initiator = false) {
     this.peer = new this.PeerClass({
       initiator,
       trickle: false
@@ -67,11 +67,11 @@ export class Sync {
     return p.then(signal => btoa(JSON.stringify(signal)))
   }
 
-  async backlog() {
+  async backlog () {
     return this.pushBacklog
   }
 
-  async gotData(data) {
+  async gotData (data) {
     // console.log('got data', data.toString())
     let reader = null
     try {
@@ -153,13 +153,13 @@ export class Sync {
     }
   }
 
-  destroy() {
+  destroy () {
     this.database.blocks.syncs.delete(this)
     this.status = 'destroyed'
     // this.peer.destroy()  todo
   }
 
-  async sendUpdate(blockstore) {
+  async sendUpdate (blockstore) {
     if (!this.peer || !this.isReady) return
     // console.log('send update from', this.database.instanceId)
     // todo should send updates since last sync (currently sends each transaction)
@@ -168,7 +168,7 @@ export class Sync {
     this.peer.send(newCar.bytes)
   }
 
-  async startSync() {
+  async startSync () {
     // console.log('start sync', this.peer.initiator)
     this.isReady = true
     const allCIDs = await this.database.allStoredCIDs()
@@ -188,7 +188,7 @@ export class Sync {
    * @param {import("./database.js").Database} database
    * @param {string} key
    */
-  static async makeCar(database, key, skip = []) {
+  static async makeCar (database, key, skip = []) {
     const allCIDs = await database.allCIDs()
     const blocks = database.blocks
     const rootCIDs = database.clock

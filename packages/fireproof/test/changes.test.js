@@ -1,14 +1,10 @@
 import { describe, it, beforeEach, afterEach } from 'mocha'
 import assert from 'node:assert'
 import { Fireproof } from '../src/fireproof.js'
-import { Sync } from '../src/sync.js'
-import { Database } from '../src/database.js'
-import { join, dirname } from 'path'
-import fs from 'fs'
-import { readFileSync, writeFileSync } from 'node:fs'
+
 import { startServer } from '../scripts/server.js'
 
-import { resetTestDataDir, dbFiles, cpDir } from './helpers.js'
+import { resetTestDataDir } from './helpers.js'
 
 import { Filesystem } from '../src/storage/filesystem.js'
 
@@ -17,7 +13,9 @@ const TARGET_DB_NAME = 'changes-fptest-target'
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 describe('basic changes', () => {
-  let sourceDb, targetDb, sourceStorage, targetStorage, car, server
+  let sourceDb, targetDb,
+    // sourceStorage, targetStorage, car,
+    server
   beforeEach(async () => {
     await sleep(10)
     await resetTestDataDir()
@@ -28,7 +26,7 @@ describe('basic changes', () => {
       }
     })
     // sourceDb.blocks.valet.primary = new Filesystem(SOURCE_DB_NAME)
-    sourceStorage = sourceDb.blocks.valet.primary
+    // sourceStorage = sourceDb.blocks.valet.primary
     // console.log('sourceStorage', sourceStorage)
     // await sourceDb.ready
 
@@ -61,12 +59,12 @@ describe('basic changes', () => {
 
     targetDb = Fireproof.storage(TARGET_DB_NAME, {
       primary: {
-        StorageClass: Filesystem,
-      }})
-      
+        StorageClass: Filesystem
+      }
+    })
 
-      // await targetDb.put({ _id: 'two', bar: 'ok' })
-      // ,
+    // await targetDb.put({ _id: 'two', bar: 'ok' })
+    // ,
     //   secondary: {
     //     type : 'rest',
     //     url: 'http://localhost:8000/' + TARGET_DB_NAME

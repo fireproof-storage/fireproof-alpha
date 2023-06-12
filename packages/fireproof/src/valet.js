@@ -9,7 +9,7 @@ import { bf } from 'prolly-trees/utils'
 import { nocache as cache } from 'prolly-trees/cache'
 import { encrypt, decrypt } from './crypto.js'
 import { Buffer } from 'buffer'
-import { parse } from 'path'
+// import { parse } from 'path'
 import { parseCID } from './database.js'
 
 const chunker = bf(30)
@@ -22,7 +22,7 @@ export class Valet {
 
   instanceId = Math.random().toString(36).slice(2)
 
-  constructor(name = 'default', config = {}) {
+  constructor (name = 'default', config = {}) {
     this.name = name
     // console.log('new Valet', name, config.primary)
     this.primary = Loader.appropriate(name, config.primary)
@@ -39,12 +39,12 @@ export class Valet {
     // })
   }
 
-  addStorage(config) {
+  addStorage (config) {
     this.secondary = Loader.appropriate(this.name, config)
     return this.secondary
   }
 
-  async saveHeader(header) {
+  async saveHeader (header) {
     // each storage needs to add its own carCidMapCarCid to the header
     if (this.secondary) {
       this.secondary.saveHeader(header)
@@ -59,7 +59,7 @@ export class Valet {
    * @returns {Promise<void>}
    * @memberof Valet
    */
-  async writeTransaction(innerBlockstore, cids) {
+  async writeTransaction (innerBlockstore, cids) {
     if (innerBlockstore.lastCid) {
       await parkCar(this.primary, innerBlockstore, cids)
       if (this.secondary) await parkCar(this.secondary, innerBlockstore, cids)
@@ -74,7 +74,7 @@ export class Valet {
    * @yields {{cid: string, value: Uint8Array}}
    * @returns {AsyncGenerator<any, any, any>}
    */
-  async *cids() {
+  async * cids () {
     // console.log('valet cids')
     // todo use cidMap
     // while (cursor) {
@@ -85,7 +85,7 @@ export class Valet {
 
   remoteBlockFunction = null
 
-  async getValetBlock(dataCID) {
+  async getValetBlock (dataCID) {
     // console.log('getValetBlock primary', dataCID)
     try {
       const { block } = await this.primary.getLoaderBlock(dataCID)
@@ -114,7 +114,7 @@ export class Valet {
   }
 }
 
-async function parkCar(storage, innerBlockstore, cids) {
+async function parkCar (storage, innerBlockstore, cids) {
   // console.log('parkCar', this.instanceId, this.name, carCid, cids)
   let newCar
   if (storage.keyMaterial) {
@@ -236,8 +236,8 @@ export const makeCarSince = async (database, key, sinceClock) => {
   const blocks = database.blocks
   const rootCIDs = changes.clock
 
-  const newCIDs = [...new Set([...rootCIDs, ...allCIDs])] //.filter(cid => !skip.includes(cid.toString()))
-  const syncCIDs = [...new Set([...rootCIDs, ...allCIDs])] //.filter(cid => !skip.includes(cid.toString()))])]
+  const newCIDs = [...new Set([...rootCIDs, ...allCIDs])] // .filter(cid => !skip.includes(cid.toString()))
+  const syncCIDs = [...new Set([...rootCIDs, ...allCIDs])] // .filter(cid => !skip.includes(cid.toString()))])]
   console.log(
     'makeCar',
     rootCIDs.map(c => c.toString()),
