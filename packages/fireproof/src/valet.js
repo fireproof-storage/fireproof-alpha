@@ -253,9 +253,9 @@ export const makeCarSince = async (database, key, sinceClock) => {
     key = blocks.valet?.primary.keyMaterial
   }
   if (key) {
-    console.log('encrypting car', { rootCIDs, syncCIDs })
+    console.log('encrypting car', { rootCIDs, syncCIDs }, rootCIDs.length)
     return blocksToEncryptedCarBlock(
-      rootCIDs.map(cid => parseCID(cid.toString())),
+      parseCID(rootCIDs[0]),
       {
         entries: () => syncCIDs.map(cid => ({ cid })),
         get: async cid => {

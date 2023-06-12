@@ -100,7 +100,7 @@ export class Database {
         }
         // todo I want keyMaterial from the storage I am adding
         pushes.push(
-          makeCarSince(this, /* newStorage.keyMaterial */ null, since).then(car => {
+          makeCarSince(this, newStorage.keyMaterial, since).then(car => {
             console.log('car', car.cid)
             newStorage.saveCar(car)
           }).catch(e => { console.log('car error', e) })

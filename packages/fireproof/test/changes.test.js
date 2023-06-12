@@ -57,10 +57,16 @@ describe('basic changes', () => {
       url: 'http://localhost:8000/' + TARGET_DB_NAME
     })
 
-    // targetDb = Fireproof.storage(TARGET_DB_NAME, {
-    //   primary: {
-    //     StorageClass: Filesystem,
-    //   },
+    sleep(10)
+
+    targetDb = Fireproof.storage(TARGET_DB_NAME, {
+      primary: {
+        StorageClass: Filesystem,
+      }})
+      
+
+      // await targetDb.put({ _id: 'two', bar: 'ok' })
+      // ,
     //   secondary: {
     //     type : 'rest',
     //     url: 'http://localhost:8000/' + TARGET_DB_NAME
@@ -94,7 +100,7 @@ describe('basic changes', () => {
   //   await targetDb.ready
   //   console.log(targetStorage.headers)
   // })
-  it.skip('can read from target', async () => {
+  it('can read from target', async () => {
     const doc = await targetDb.get('foo')
     assert.equal(doc.bar, 'baz')
   })

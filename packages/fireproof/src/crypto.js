@@ -21,6 +21,7 @@ const encrypt = async function * ({ get, cids, hasher, key, cache, chunker, root
     // console.log(`encrypting ${string} as ${block.cid}`)
     yield block
     set.add(block.cid.toString())
+    console.log('root', root.constructor.name, root.toString(), 'unencrypted', unencrypted.cid.toString(), root.toString() === unencrypted.cid.toString(), unencrypted.cid.equals(root))
     if (unencrypted.cid.equals(root)) eroot = block.cid
   }
   if (!eroot) throw new Error('cids does not include root')
