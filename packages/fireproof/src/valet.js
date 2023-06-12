@@ -9,6 +9,8 @@ import { bf } from 'prolly-trees/utils'
 import { nocache as cache } from 'prolly-trees/cache'
 import { encrypt, decrypt } from './crypto.js'
 import { Buffer } from 'buffer'
+import { parse } from 'path'
+import { parseCID } from './database.js'
 
 const chunker = bf(30)
 
@@ -20,7 +22,7 @@ export class Valet {
 
   instanceId = Math.random().toString(36).slice(2)
 
-  constructor (name = 'default', config = {}) {
+  constructor(name = 'default', config = {}) {
     this.name = name
     // console.log('new Valet', name, config.primary)
     this.primary = Loader.appropriate(name, config.primary)
@@ -30,15 +32,23 @@ export class Valet {
     const readyP = [this.primary.ready]
     if (this.secondary) readyP.push(this.secondary.ready)
 
-    this.ready = Promise.all(readyP).then((blocksReady) => {
-      // console.log('blocksReady valet', this.name, blocksReady)
-      return blocksReady
-    })
+    this.ready = Promise.all(readyP)
+    // .then((blocksReady) => {
+    //   // console.log('blocksReady valet', this.name, blocksReady)
+    //   return blocksReady
+    // })
   }
 
-  async saveHeader (header) {
+  addStorage(config) {
+    this.secondary = Loader.appropriate(this.name, config)
+    return this.secondary
+  }
+
+  async saveHeader(header) {
     // each storage needs to add its own carCidMapCarCid to the header
-    if (this.secondary) { this.secondary.saveHeader(header) } // todo: await?
+    if (this.secondary) {
+      this.secondary.saveHeader(header)
+    } // todo: await?
     return await this.primary.saveHeader(header)
   }
 
@@ -49,7 +59,7 @@ export class Valet {
    * @returns {Promise<void>}
    * @memberof Valet
    */
-  async writeTransaction (innerBlockstore, cids) {
+  async writeTransaction(innerBlockstore, cids) {
     if (innerBlockstore.lastCid) {
       await parkCar(this.primary, innerBlockstore, cids)
       if (this.secondary) await parkCar(this.secondary, innerBlockstore, cids)
@@ -64,7 +74,7 @@ export class Valet {
    * @yields {{cid: string, value: Uint8Array}}
    * @returns {AsyncGenerator<any, any, any>}
    */
-  async * cids () {
+  async *cids() {
     // console.log('valet cids')
     // todo use cidMap
     // while (cursor) {
@@ -75,7 +85,7 @@ export class Valet {
 
   remoteBlockFunction = null
 
-  async getValetBlock (dataCID) {
+  async getValetBlock(dataCID) {
     // console.log('getValetBlock primary', dataCID)
     try {
       const { block } = await this.primary.getLoaderBlock(dataCID)
@@ -104,7 +114,7 @@ export class Valet {
   }
 }
 
-async function parkCar (storage, innerBlockstore, cids) {
+async function parkCar(storage, innerBlockstore, cids) {
   // console.log('parkCar', this.instanceId, this.name, carCid, cids)
   let newCar
   if (storage.keyMaterial) {
@@ -155,8 +165,14 @@ export const blocksToEncryptedCarBlock = async (innerBlockStoreClockRootCid, blo
   for (const { cid } of blocks.entries()) {
     theCids.push(cid.toString())
   }
-  // console.log('encrypting', theCids.length, 'blocks', theCids.includes(innerBlockStoreClockRootCid.toString()), keyMaterial)
-  // console.log('cids', theCids, innerBlockStoreClockRootCid.toString())
+  console.log(
+    'encrypting',
+    theCids.length,
+    'blocks',
+    theCids.includes(innerBlockStoreClockRootCid.toString()),
+    keyMaterial
+  )
+  console.log('cids', theCids, innerBlockStoreClockRootCid)
   let last
   for await (const block of encrypt({
     cids: theCids,
@@ -203,5 +219,67 @@ export const blocksFromEncryptedCarBlock = async (cid, get, keyMaterial) => {
     })()
     memoizeDecryptedCarBlocks.set(cid.toString(), blocksPromise)
     return blocksPromise
+  }
+}
+
+/**
+ * @param {import("./database.js").Database} database
+ * @param {string} key
+ * @param {string[]} sinceClock
+ */
+export const makeCarSince = async (database, key, sinceClock) => {
+  // const allCIDs =
+  const changes = await database.changesSince(sinceClock)
+  console.log('changes', changes)
+  const allCIDs = changes.proof.data
+
+  const blocks = database.blocks
+  const rootCIDs = changes.clock
+
+  const newCIDs = [...new Set([...rootCIDs, ...allCIDs])] //.filter(cid => !skip.includes(cid.toString()))
+  const syncCIDs = [...new Set([...rootCIDs, ...allCIDs])] //.filter(cid => !skip.includes(cid.toString()))])]
+  console.log(
+    'makeCar',
+    rootCIDs.map(c => c.toString()),
+    syncCIDs.map(c => c.toString()),
+    allCIDs.map(c => c.toString())
+  )
+  if (newCIDs.length === 0) {
+    return null
+  }
+
+  if (typeof key === 'undefined') {
+    console.log('inheriting key material')
+    key = blocks.valet?.primary.keyMaterial
+  }
+  if (key) {
+    console.log('encrypting car', { rootCIDs, syncCIDs })
+    return blocksToEncryptedCarBlock(
+      rootCIDs.map(cid => parseCID(cid.toString())),
+      {
+        entries: () => syncCIDs.map(cid => ({ cid })),
+        get: async cid => {
+          const got = await blocks.get(cid)
+          // console.log('got', got)
+          return got
+        }
+      },
+      key
+    )
+  } else {
+    const carBlocks = await Promise.all(
+      syncCIDs.map(async c => {
+        // @ts-ignore
+        const b = await blocks.get(c)
+        if (typeof b.cid === 'string') {
+          b.cid = parseCID(b.cid)
+        }
+        return b
+      })
+    )
+    // console.log('carblock')
+    return blocksToCarBlock(rootCIDs.map(cid => parseCID(cid.toString())), {
+      entries: () => carBlocks
+    })
   }
 }

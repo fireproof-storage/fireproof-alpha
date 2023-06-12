@@ -4,6 +4,7 @@ import { doTransaction, TransactionBlockstore } from './blockstore.js'
 import charwise from 'charwise'
 import { CID } from 'multiformats'
 import { DbIndex as Index } from './db-index.js'
+import { makeCarSince } from './valet.js'
 
 // TypeScript Types
 // eslint-disable-next-line no-unused-vars
@@ -30,7 +31,7 @@ export class Database {
   rootCache = null
   eventsCache = new Map()
 
-  constructor (name, config = {}) {
+  constructor(name, config = {}) {
     this.name = name
     this.clock = []
     this.instanceId = `fp.${this.name}.${Math.random().toString(36).substring(2, 7)}`
@@ -66,7 +67,7 @@ export class Database {
                 clock: {
                   byId: byId ? parseCID(byId) : null,
                   byKey: byKey ? parseCID(byKey) : null,
-                  db: (db && db.length > 0) ? db.map(c => parseCID(c)) : null
+                  db: db && db.length > 0 ? db.map(c => parseCID(c)) : null
                 },
                 code,
                 name
@@ -79,17 +80,51 @@ export class Database {
     })
   }
 
+  async addStorage(config) {
+    const newStorage = this.blocks.valet.addStorage(config)
+    this.ready = newStorage.ready.then(headers => {
+      // console.log('ready header', headers)
+      const clock = new Set(this.clock)
+      const pushes = []
+      for (const [k, header] of Object.entries(headers)) {
+        let since = []
+        if (!header) {
+          console.log('no header', k)
+          // in this case we want to upload a compaction car to the new storage since []
+        } else {
+          // in this case we want to upload a compaction car to the new storage since header.clock (which we wrote on last push)
+          since = header.clock
+          for (const cid of header.clock) {
+            clock.add(cid)
+          }
+        }
+        // todo I want keyMaterial from the storage I am adding
+        pushes.push(
+          makeCarSince(this, /* newStorage.keyMaterial */ null, since).then(car => {
+            console.log('car', car.cid)
+            newStorage.saveCar(car)
+          }).catch(e => { console.log('car error', e) })
+        )
+      }
+      Promise.all(pushes).then(() => {
+        console.log('pushes done')
+        this.clock = [...clock]
+      })
+      // todo should we fire a reset event here?
+    })
+  }
+
   /**
    * Renders the Fireproof instance as a JSON object.
    * @returns {Object} - The JSON representation of the Fireproof instance. Includes clock heads for the database and its indexes.
    * @memberof Fireproof
    * @instance
    */
-  toJSON () {
+  toJSON() {
     return this.blocks.valet ? this.blocks.valet.primary.prepareHeader(this.toHeader(), false) : this.toHeader() // omg
   }
 
-  toHeader () {
+  toHeader() {
     return {
       clock: this.clockToJSON(),
       name: this.name,
@@ -107,17 +142,17 @@ export class Database {
    * @memberof Fireproof
    * @instance
    */
-  clockToJSON (clock = null) {
+  clockToJSON(clock = null) {
     return (clock || this.clock).map(cid => cid.toString())
   }
 
-  maybeSaveClock () {
+  maybeSaveClock() {
     if (this.name && this.blocks.valet) {
       this.blocks.valet.saveHeader(this.toHeader())
     }
   }
 
-  index (name) {
+  index(name) {
     const indexes = [...this.indexes.values()].filter(index => index.name === name)
     if (indexes.length > 1) {
       throw new Error(`Multiple indexes found with name ${name}`)
@@ -132,7 +167,7 @@ export class Database {
    * @memberof Fireproof
    * @instance
    */
-  async notifyReset () {
+  async notifyReset() {
     await this.ready
     await this.notifyListeners({ _reset: true, _clock: this.clockToJSON() })
   }
@@ -145,7 +180,7 @@ export class Database {
    * @memberof Fireproof
    * @instance
    */
-  async changesSince (aClock) {
+  async changesSince(aClock) {
     await this.ready
     // console.log('events for', this.instanceId, aClock?.constructor.name)
     // console.log('changesSince', this.instanceId, this.clockToJSON(aClock), this.clockToJSON())
@@ -189,7 +224,7 @@ export class Database {
     }
   }
 
-  async allDocuments () {
+  async allDocuments() {
     await this.ready
     const allResp = await getAll(this.blocks, this.clock, this.rootCache)
     this.rootCache = { root: allResp.root, clockCIDs: allResp.clockCIDs }
@@ -204,7 +239,7 @@ export class Database {
     }
   }
 
-  async allCIDs () {
+  async allCIDs() {
     await this.ready
     const allResp = await getAll(this.blocks, this.clock, this.rootCache, true)
     this.rootCache = { root: allResp.root, clockCIDs: allResp.clockCIDs }
@@ -215,7 +250,7 @@ export class Database {
     return [...cids, ...clockCids] // clock CID last -- need to handle multiple entry clocks
   }
 
-  async allStoredCIDs () {
+  async allStoredCIDs() {
     await this.ready
     const allCIDs = []
     for await (const { cid } of this.blocks.entries()) {
@@ -233,7 +268,7 @@ export class Database {
    * @memberof Fireproof
    * @instance
    */
-  async get (key, opts = {}) {
+  async get(key, opts = {}) {
     await this.ready
     const clock = opts.clock || this.clock
     const resp = await get(this.blocks, clock, charwise.encode(key), this.rootCache)
@@ -269,7 +304,7 @@ export class Database {
    * @memberof Fireproof
    * @instance
    */
-  async put ({ _id, _proof, ...doc }) {
+  async put({ _id, _proof, ...doc }) {
     await this.ready
     const id = _id || 'f' + Math.random().toString(36).slice(2)
     await this.runValidation({ _id: id, ...doc })
@@ -283,7 +318,7 @@ export class Database {
    * @memberof Fireproof
    * @instance
    */
-  async del (docOrId) {
+  async del(docOrId) {
     await this.ready
     let id
     let clock = null
@@ -308,7 +343,7 @@ export class Database {
    * @memberof Fireproof
    * @instance
    */
-  async runValidation (doc) {
+  async runValidation(doc) {
     if (this.config && this.config.validateChange) {
       const oldDoc = await this.get(doc._id)
         .then(doc => doc)
@@ -323,7 +358,7 @@ export class Database {
    * @param {{del?: true, key : string, value?: any}} decodedEvent - the event to add
    * @returns {Promise<{ proof:{}, id: string, clock: CID[] }>} - The result of adding the event to storage
    */
-  async putToProllyTree (decodedEvent, clock = null) {
+  async putToProllyTree(decodedEvent, clock = null) {
     // console.log('putToProllyTree', decodedEvent)
     const event = encodeEvent(decodedEvent)
     if (clock && JSON.stringify(this.clockToJSON(clock)) !== JSON.stringify(this.clockToJSON())) {
@@ -358,7 +393,7 @@ export class Database {
     // todo should include additions (or split clock)
   }
 
-  applyClock (prevClock, newClock) {
+  applyClock(prevClock, newClock) {
     // console.log('prevClock', prevClock.length, prevClock.map((cid) => cid.toString()))
     // console.log('newClock', newClock.length, newClock.map((cid) => cid.toString()))
     // console.log('this.clock', this.clock.length, this.clockToJSON())
@@ -385,15 +420,15 @@ export class Database {
   //       return this.clock
   //     }
 
-  async * vis () {
-    return yield * vis(this.blocks, this.clock)
+  async *vis() {
+    return yield* vis(this.blocks, this.clock)
   }
 
-  async visTree () {
+  async visTree() {
     return await visMerkleTree(this.blocks, this.clock)
   }
 
-  async visClock () {
+  async visClock() {
     return await visMerkleClock(this.blocks, this.clock)
   }
 
@@ -404,7 +439,7 @@ export class Database {
    * @returns {Function} - A function that can be called to unregister the listener.
    * @memberof Fireproof
    */
-  subscribe (listener) {
+  subscribe(listener) {
     this.listeners.add(listener)
     return () => {
       this.listeners.delete(listener)
@@ -417,11 +452,11 @@ export class Database {
    * @returns {Function} - A function that can be called to unregister the listener.
    * @memberof Fireproof
    */
-  registerListener (listener) {
+  registerListener(listener) {
     return this.subscribe(listener)
   }
 
-  async notifyListeners (changes) {
+  async notifyListeners(changes) {
     // await sleep(10)
     await this.maybeSaveClock()
     for (const listener of this.listeners) {
@@ -429,12 +464,12 @@ export class Database {
     }
   }
 
-  setRemoteBlockReader (remoteBlockReaderFn) {
+  setRemoteBlockReader(remoteBlockReaderFn) {
     this.blocks.remoteBlockFunction = remoteBlockReaderFn
   }
 }
 
-export async function cidsToProof (cids) {
+export async function cidsToProof(cids) {
   if (!cids) return []
   if (!cids.all) {
     return [...cids].map(cid => cid.toString())
@@ -444,12 +479,12 @@ export async function cidsToProof (cids) {
   return [...all].map(cid => cid.toString())
 }
 
-function decodeEvent (event) {
+function decodeEvent(event) {
   const decodedKey = charwise.decode(event.key)
   return { ...event, key: decodedKey }
 }
 
-function encodeEvent (event) {
+function encodeEvent(event) {
   if (!(event && event.key)) return
   const encodedKey = charwise.encode(event.key)
   return { ...event, key: encodedKey }

@@ -108,7 +108,7 @@ export class Base {
     if (!this.valetRootCarCid) {
       this.setCarCidMapCarCid(this.config.car)
     }
-    if (!this.keyMaterial) {
+    if (!this.keyMaterial) { // this will lock storage at first configured key which might not be what we want
       const nullKey = this.config.key === null
       if (nullKey || this.config.key) {
         this.setKeyMaterial(this.config.key)
