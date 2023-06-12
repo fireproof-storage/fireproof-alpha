@@ -502,6 +502,8 @@ describe('Rest dataset', () => {
 
     const response3 = await ezistingDb.allDocuments()
     assert.equal(response3.rows.length, 21)
+
+    // should we assert the document is readable?
   })
   it('attach existing secondary rest storage to empty db', async () => {
     const emptyDb = await Fireproof.storage('fptest-empty-db-todos', {

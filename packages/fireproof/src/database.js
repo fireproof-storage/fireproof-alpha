@@ -141,7 +141,7 @@ export class Database {
    * Returns the changes made to the Fireproof instance since the specified event.
    * @function changesSince
    * @param {CID[]} [event] - The clock head to retrieve changes since. If null or undefined, retrieves all changes.
-   * @returns {Promise<{rows : Object[], clock: CID[], proof: {}}>} An object containing the rows and the head of the instance's clock.
+   * @returns {Promise<{rows : Object[], clock: CID[], proof: { data : string[], clock : string[]}}>} An object containing the rows and the head of the instance's clock.
    * @memberof Fireproof
    * @instance
    */
@@ -437,7 +437,7 @@ export class Database {
 export async function cidsToProof (cids) {
   if (!cids) return []
   if (!cids.all) {
-    return [...cids]
+    return [...cids].map(cid => cid.toString())
   }
 
   const all = await cids.all()
