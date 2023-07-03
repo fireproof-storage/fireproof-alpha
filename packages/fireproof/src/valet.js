@@ -1,4 +1,3 @@
-
 import { Loader } from './loader.js'
 
 export class Valet {

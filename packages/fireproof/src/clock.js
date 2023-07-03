@@ -140,6 +140,9 @@ export class EventFetcher {
  * @returns {Promise<EventBlockView<T>>}
  */
 export async function encodeEventBlock (value) {
+  if (value === undefined) {
+    throw new Error('There should be some value')
+  }
   // TODO: sort parents
   const { cid, bytes } = await encode({ value, codec: cbor, hasher: sha256 })
   // @ts-ignore
@@ -152,6 +155,9 @@ export async function encodeEventBlock (value) {
  * @returns {Promise<EventBlockView<T>>}
  */
 export async function decodeEventBlock (bytes) {
+  if (bytes === undefined) {
+    throw new Error('There should be some value')
+  }
   const { cid, value } = await decode({ bytes, codec: cbor, hasher: sha256 })
   // @ts-ignore
   return new Block({ cid, value, bytes })

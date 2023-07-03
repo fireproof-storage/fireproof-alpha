@@ -315,6 +315,10 @@ export class Base {
           // @ts-ignore
           useCodec = dagcbor // todo this is a dirty check
         }
+        // let value= ...got
+        // if ( value === undefined) {
+        //   throw new Error('There should be some value')
+        // }
         const decoded = await Block.decode({
           ...got,
           codec: useCodec,

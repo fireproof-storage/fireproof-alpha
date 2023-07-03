@@ -1,4 +1,3 @@
-
 // import { mkdir, writeFile } from 'fs/promises'
 import { join, dirname } from 'path'
 import { homedir } from 'os'

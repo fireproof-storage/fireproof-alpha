@@ -39,6 +39,10 @@ export const makeGetBlock = blocks => {
   const getBlockFn = async address => {
     // const { cid, bytes } = await withLog(address, () => blocks.get(address))
     const { cid, bytes } = await blocks.get(address)
+    // if (bytes === undefined) {
+    //   throw new Error('There must be some value!')
+    // }
+    // console.log('This is the value of the bytes', bytes)
     // cids.add({ address: cid })
     return createBlock({ cid, bytes, hasher, codec })
   }
@@ -148,6 +152,9 @@ const bulkFromEvents = (sorted, event) => {
     if (!key) {
       throw new Error('key is required')
     }
+    // if (!value) {
+    //   throw new Error('the value is required and cannot be undefined')
+    // }
     const bulkEvent = type === 'put' ? { key, value } : { key, del: true }
     bulk.set(bulkEvent.key, bulkEvent) // last wins
   }
@@ -165,10 +172,19 @@ const bulkFromEvents = (sorted, event) => {
 const prollyRootFromAncestor = async (events, ancestor, getBlock) => {
   // console.log('prollyRootFromAncestor', ancestor)
   const event = await events.get(ancestor)
+  // if (event.value === undefined) {
+  //   throw new Error('Some value must be passed it cannot be undefined')
+  // }
   const { root } = event.value.data
   if (root) {
+    // if (getBlock === undefined) {
+    //   throw new Error('We need to pass some value!')
+    // }
     return load({ cid: root, get: getBlock, ...blockOpts })
   } else {
+    // if (root === undefined) {
+    //   throw new Error('We should pass some value!')
+    // }
     // console.log('no root', root) // false means no common ancestor. null means empty database.
     return root
   }
@@ -225,6 +241,10 @@ const doProllyBulk = async (inBlocks, head, event, doFull = false) => {
 
     return { root, blocks: newBlocks, clockCIDs: await events.all() }
   } else {
+    // bulkOperations is an array
+    // if (bulkOperations.length === 0) {
+    //   throw new Error('Some value must be passed!')
+    // }
     const writeResp = await prollyRootNode.bulk(bulkOperations) // { root: newProllyRootNode, blocks: newBlocks }
     writeResp.clockCIDs = await events.all()
     return writeResp

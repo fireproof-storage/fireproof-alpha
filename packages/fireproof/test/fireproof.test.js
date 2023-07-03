@@ -19,6 +19,7 @@ describe('Fireproof', () => {
     // const loader = Loader.appropriate('helloName')
     // rmSync(join(loader.config.dataDir, 'fptest-hello-name'), { recursive: true, force: true })
     // console.log('new database instance')
+    // what is the config parameter primary meant for?
     database = Fireproof.storage('fptest-hello-name', {
       primary: {
         StorageClass: Filesystem

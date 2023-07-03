@@ -281,6 +281,11 @@ export class Database {
     await this.ready
     const id = _id || 'f' + Math.random().toString(36).slice(2)
     await this.runValidation({ _id: id, ...doc })
+    // _clock?
+    // Should we handle it here?
+    if (doc === undefined) {
+      throw new Error('There should be some value that must be present')
+    }
     return await this.putToProllyTree({ key: id, value: doc }, doc._clock)
   }
 
