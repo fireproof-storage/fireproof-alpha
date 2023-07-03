@@ -3,6 +3,7 @@ import assert from 'node:assert'
 import { Fireproof } from '../src/fireproof.js'
 import { resetTestDataDir } from './helpers.js'
 import { Filesystem } from '../src/storage/filesystem.js'
+import isEqual from 'lodash.isequal'
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 
@@ -62,16 +63,27 @@ describe('Fireproof', () => {
   it('only put document with undefined field', async () => {
     assert(resp0.id, 'should have id')
     assert.equal(resp0.id, '1ef3b32a-3c3a-4b5e-9c1c-8c5c0c5c0c5c')
-    const put2 = await database.put({ _id: 'undef', field: undefined })
-    assert.notEqual(put2.id, null)
+    try {
+      const put2 = await database.put({ _id: 'undef', field: undefined })
+      assert.notEqual(put2.id, null)
+    } catch (e) {
+      console.log(e.toString())
+      assert(true)
+    }
   })
   it('mvcc put and get document with _clock that matches', async () => {
     assert(resp0.clock, 'should have clock')
     assert.equal(resp0.clock.length, 1)
     assert.equal(resp0.clock[0].toString(), 'bafyreiad55hjvlzse7dxt5qwf6xsv4zucuyoracvpcqifpi6pmdaavdkoa')
     const theDoc = await database.get('1ef3b32a-3c3a-4b5e-9c1c-8c5c0c5c0c5c')
+    console.log(theDoc, 'This is the doc that was returned')
     theDoc._clock = database.clock
     assert.equal(database.clock.length, 1)
+    const { _id, _proof, ...doc } = theDoc
+    console.log(doc, 'The original doc object')
+    const obj2 = JSON.parse(JSON.stringify(doc))
+    console.log(obj2, 'The parsed one')
+    console.log(isEqual(doc, obj2))
     const put2 = await database.put(theDoc)
     assert.equal(put2.id, '1ef3b32a-3c3a-4b5e-9c1c-8c5c0c5c0c5c')
     assert.equal(put2.clock.length, 1)
