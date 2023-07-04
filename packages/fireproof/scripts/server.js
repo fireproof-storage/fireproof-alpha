@@ -6,6 +6,8 @@ import { join } from 'path'
 import { homedir } from 'os'
 // import { mkdir, writeFile } from 'fs/promises'
 
+import { server as ucantoServer } from './ucanto.js'
+
 const defaultConfig = {
   dataDir: join(homedir(), '.fireproof')
 }
@@ -48,9 +50,29 @@ export function startServer (quiet = true) {
   const log = quiet ? () => {} : console.log
 
   const server = http.createServer(async (req, res) => {
+    console.log(req.method, req.url)
     res.setHeader('Access-Control-Allow-Origin', '*')
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+
+    if (req.url === '/ucan') {
+      console.log('ucan request')
+      const chunks = []
+      for await (const chunk of req) {
+        chunks.push(chunk)
+      }
+
+      const { headers, body } = await ucantoServer.request({
+        // @ts-ignore
+        headers: req.headers,
+        body: Buffer.concat(chunks)
+      })
+
+      res.writeHead(200, headers)
+      res.write(body)
+      res.end()
+      return
+    }
 
     if (req.method === 'PUT') {
       const filePath = path.join(DATA_PATH, req.url)
