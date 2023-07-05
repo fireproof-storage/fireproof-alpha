@@ -85,6 +85,10 @@ export class Base {
     }
   }
 
+  setUploader (uploadFileFn) {
+    this.uploadFileFn = uploadFileFn
+  }
+
   async compact (clock) {
     if (this.readonly) return
     if (clock.length !== 1) {
@@ -141,8 +145,10 @@ export class Base {
     ]
 
     await this.writeCars(carList)
+
     this.valetRootCarCid = newValetCidCar.cid
     // console.trace('saved car', this.instanceId, this.name, newValetCidCar.cid.toString())
+    // this is where you could enqueue cars for upload to a remote server
     return newValetCidCar
   }
 
