@@ -1,11 +1,6 @@
-<p align="center" >
-  <a href="https://fireproof.storage/">
-    <img src="https://fireproof.storage/static/img/logo-animated-black.svg" alt="Fireproof logo" width="200">
-  </a>
-</p>
-<h3 align="center">
-  Cloudless database for React apps
-</h3>
+# You are probably looking for [Fireproof](https://github.com/fireproof-storage/fireproof)
+
+This is an old snapshot of the alpha version. The link above is the current version.
 
 <p align="center">
   <a href="https://github.com/fireproof-storage/fireproof/actions/workflows/test.yml">
